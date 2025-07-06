@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YOLO Stream Detection</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .video-container {
+            flex: 2;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .data-container {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .detection-item {
+            background: #f8f9fa;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            border-left: 4px solid #007bff;
+        }
+        .count-summary {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .count-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .count-item:last-child {
+            border-bottom: none;
+        }
+        .total-count {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #007bff;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .timestamp {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="video-container">
+            <h2>Live Stream</h2>
+            <img src="{{ url_for('video_feed') }}" alt="Video stream">
+        </div>
+        <div class="data-container">
+            <h2>Deteksi Objek</h2>
+            <div class="timestamp" id="timestamp"></div>
+            
+            <div class="count-summary">
+                <div class="total-count" id="total-count"></div>
+                <div id="object-counts"></div>
+            </div>
+            
+            <h2>Detail Deteksi</h2>
+            <div id="detection-data"></div>
+        </div>
+    </div>
+
+    <script>
+        function updateDetectionData() {
+            $.get('/detection_data', function(data) {
+                $('#timestamp').text('Waktu: ' + data.timestamp);
+                
+                // Update total count
+                $('#total-count').text(`Total Objek Terdeteksi: ${data.total_objects}`);
+                
+                // Update object counts
+                let countsHtml = '';
+                for (const [className, count] of Object.entries(data.counts)) {
+                    countsHtml += `
+                        <div class="count-item">
+                            <span>${className}</span>
+                            <span>${count}</span>
+                        </div>
+                    `;
+                }
+                $('#object-counts').html(countsHtml);
+                
+                // Update detection details
+                let detailsHtml = '';
+                data.objects.forEach(function(obj) {
+                    detailsHtml += `
+                        <div class="detection-item">
+                            <strong>${obj.class}</strong>
+                            <div>Confidence: ${obj.confidence}%</div>
+                        </div>
+                    `;
+                });
+                
+                $('#detection-data').html(detailsHtml);
+            });
+        }
+
+        // Update data setiap 1 detik
+        setInterval(updateDetectionData, 1000);
+        
+        // Update pertama kali saat halaman dimuat
+        updateDetectionData();
+    </script>
+</body>
+</html> 
