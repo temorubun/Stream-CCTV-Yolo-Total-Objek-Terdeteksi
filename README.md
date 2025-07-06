@@ -1,109 +1,93 @@
-# Stream CCTV dengan Deteksi Objek YOLOv8
+# Stream CCTV YOLO Detection dengan Penghitungan Objek
 
-Aplikasi web Flask untuk streaming CCTV dengan kemampuan deteksi objek menggunakan YOLOv8. Aplikasi ini dapat menampilkan video stream dari kamera RTSP dan melakukan deteksi objek secara real-time.
+Aplikasi web untuk menampilkan stream CCTV dengan deteksi objek menggunakan YOLOv8. Aplikasi ini dapat mendeteksi dan menghitung objek secara real-time dengan menampilkan jumlah total dan detail setiap objek yang terdeteksi.
 
 ## Fitur
-- Streaming video langsung dari kamera RTSP
-- Deteksi objek real-time menggunakan YOLOv8
-- Antarmuka web yang responsif
-- Mudah dikonfigurasi
 
-## Persyaratan Sistem
-- Windows 10/11 dengan WSL2
-- Docker Desktop
-- Koneksi jaringan ke kamera RTSP
+- 🎥 Streaming CCTV secara real-time
+- 🔍 Deteksi objek menggunakan YOLOv8
+- 📊 Menghitung jumlah objek yang terdeteksi secara real-time
+- 📈 Menampilkan detail confidence level setiap objek
+- ⚡ Update data otomatis setiap detik
+- 📱 Tampilan responsif dan user-friendly
 
-## Dependensi
-- Flask 3.0.2
-- OpenCV Python 4.8.1.78
-- NumPy 1.24.3
-- Ultralytics 8.1.28 (YOLOv8)
-- PyTorch 2.0.1
-- TorchVision 0.15.2
+## Screenshot
 
-## Cara Instalasi dan Penggunaan
+### Tampilan dengan 4 Objek Terdeteksi
+![Tampilan 4 Objek](docs/images/img%201.jpg)
+*Deteksi 4 objek: bed (60.53%), 2 person (39.12%, 38.15%), dan kite (27.54%)*
 
-### 1. Persiapan WSL
-1. Buka terminal PowerShell sebagai Administrator
-2. Masuk ke WSL Ubuntu sebagai root:
+### Tampilan dengan 3 Objek Terdeteksi
+![Tampilan 3 Objek](docs/images/img%202.jpg)
+*Deteksi 3 objek: bed (54.93%) dan 2 person (32.26%, 30.14%)*
+
+### Tampilan dengan 2 Objek Terdeteksi
+![Tampilan 2 Objek](docs/images/img%203.jpg)
+*Deteksi 2 person dengan confidence level 79.09% dan 45.58%*
+
+## Cara Penggunaan
+
+1. Clone repository ini:
 ```bash
-wsl -d ubuntu --user root
+git clone https://github.com/temorubun/Stream-CCTV-Yolo-Total-Objek-Terdeteksi.git
 ```
 
-### 2. Menggunakan Docker
-1. Clone repositori ini
-2. Buat dan jalankan container Docker:
-```bash
-docker run -it --network host --name python_dev -v ${PWD}:/app -w /app python:3.9 bash
-```
-
-### 3. Setup Container
-1. Masuk ke container jika belum berada di dalamnya:
-```bash
-docker exec -it python_dev bash
-```
-
-2. Install dependensi Python:
+2. Install dependencies yang diperlukan:
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Install dependensi sistem untuk OpenCV:
-```bash
-apt-get update && apt-get install -y libgl1-mesa-glx libglib2.0-0
-```
-
-4. Jalankan aplikasi:
+3. Jalankan aplikasi:
 ```bash
 python app.py
 ```
 
-5. Buka browser dan akses:
+4. Buka browser dan akses:
 ```
 http://localhost:5000
 ```
 
-## Konfigurasi
+## Fitur Detail
 
-Konfigurasi URL RTSP dapat diubah di file `app.py`:
+### Panel Informasi
+- Total objek terdeteksi
+- Daftar jenis objek dan jumlahnya
+- Waktu deteksi real-time
+- Confidence level setiap objek
+
+### Kemampuan Deteksi
+- Multiple object detection
+- Real-time object counting
+- Confidence level tracking
+- Automatic updates
+
+## Konfigurasi RTSP
+
+Untuk menggunakan CCTV Anda sendiri, ubah `rtsp_url` di file `app.py`:
 
 ```python
-rtsp_url = 'rtsp://admin:BGENWW@192.168.100.28:554/stream'
+rtsp_url = 'rtsp://username:password@ip-address:port/stream'
 ```
 
-Ganti URL sesuai dengan konfigurasi kamera RTSP Anda.
+## Teknologi yang Digunakan
 
-## Troubleshooting
+- Python Flask untuk backend
+- YOLOv8 untuk deteksi objek
+- OpenCV untuk pemrosesan video
+- jQuery untuk update data real-time
+- HTML/CSS untuk tampilan frontend
 
-1. **Stream tidak muncul**
-   - Periksa apakah URL RTSP benar
-   - Pastikan kredensial (username/password) benar
-   - Periksa koneksi jaringan ke kamera
-   - Lihat log terminal untuk pesan error
+## Struktur Proyek
 
-2. **Port 5000 sudah digunakan**
-   - Ubah port di `app.py` dengan menambahkan parameter port:
-   ```python
-   app.run(debug=True, port=5001)
-   ```
-
-3. **Masalah OpenCV di Docker**
-   - Jika muncul error `libGL.so.1`, jalankan:
-   ```bash
-   apt-get update && apt-get install -y libgl1-mesa-glx libglib2.0-0
-   ```
-
-4. **Masalah Performa**
-   - Pastikan koneksi jaringan stabil
-   - Kurangi resolusi video jika diperlukan
-   - Periksa penggunaan CPU dan memori
-
-## Keamanan
-
-- Jangan menyimpan kredensial RTSP langsung dalam kode
-- Gunakan variabel lingkungan atau file konfigurasi terpisah
-- Batasi akses ke aplikasi web menggunakan autentikasi jika diperlukan
-- Pastikan container Docker dikonfigurasi dengan aman
+```
+├── app.py              # Aplikasi Flask dan logika utama
+├── requirements.txt    # Daftar dependencies
+├── templates/         
+│   └── index.html     # Template HTML
+├── docs/
+│   └── images/        # Screenshot aplikasi
+└── README.md          # Dokumentasi
+```
 
 ## Kontribusi
 
