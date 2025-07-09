@@ -27,25 +27,74 @@ Aplikasi web untuk menampilkan stream CCTV dengan deteksi objek menggunakan YOLO
 
 ## Cara Penggunaan
 
-1. Clone repository ini:
-```bash
-git clone https://github.com/temorubun/Stream-CCTV-Yolo-Total-Objek-Terdeteksi.git
-```
+### Menjalankan dengan Docker (Direkomendasikan)
 
-2. Install dependencies yang diperlukan:
-```bash
-pip install -r requirements.txt
-```
+1. Tarik image Python 3.9 dari Docker Hub:
+   ```bash
+   docker pull python:3.9
+   ```
 
+2. Cek image yang sudah terunduh:
+   ```bash
+   docker images
+   ```
+
+3. Jalankan container dengan pengaturan yang sesuai:
+   ```bash
+   docker run -it --network host --name app_rtsp_cctv_yolo -v ${PWD}:/app -w /app python:3.9 bash
+   ```
+   - `--network host` : Agar container dapat mengakses RTSP stream di jaringan lokal.
+   - `-v ${PWD}:/app` : Mount folder project ke dalam container.
+   - `-w /app` : Set direktori kerja di dalam container ke `/app`.
+
+4. Install dependencies Python:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+5. Install library sistem yang dibutuhkan OpenCV:
+   ```bash
+   apt-get update
+   apt-get install -y libgl1
+   ```
+
+6. Jalankan aplikasi:
+   ```bash
+   python app.py
+   ```
+
+7. Buka browser dan akses:
+   ```
+   http://localhost:5000
+   ```
+
+**Catatan:**
+- Pastikan file `requirements.txt` sudah ada di folder project.
+- Jika ingin keluar dari container, gunakan perintah `exit`.
+- Untuk menjalankan ulang container yang sudah pernah dibuat:
+  ```bash
+  docker start -ai app_rtsp_cctv_yolo
+  ```
+
+### Menjalankan secara Lokal (Opsional)
+
+1. Install dependencies yang diperlukan:
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. Pastikan library sistem `libgl1` sudah terinstall:
+   ```bash
+   sudo apt-get update
+   sudo apt-get install -y libgl1
+   ```
 3. Jalankan aplikasi:
-```bash
-python app.py
-```
-
+   ```bash
+   python app.py
+   ```
 4. Buka browser dan akses:
-```
-http://localhost:5000
-```
+   ```
+   http://localhost:5000
+   ```
 
 ## Fitur Detail
 
